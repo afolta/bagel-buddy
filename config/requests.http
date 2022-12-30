@@ -1,9 +1,11 @@
+### JWT
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2NzI1MDg0NTB9.hlybWSMrqCosmavXcu4WChLQ4psZFQSz4o0EFQYNwa4
 ### Sessions create (login)
 POST http://localhost:3000/sessions.json
 Content-Type: application/json
 
 {
-  "email": "test2@test.com",
+  "email": "test@test.com",
   "password": "password"
 }
 
@@ -17,4 +19,10 @@ Content-Type: application/json
   "password": "password",
   "password_confirmation": "password"
 }
+
+
+### Show Trips
+GET http://localhost:3000/trips/1
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
 
