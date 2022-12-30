@@ -19,9 +19,13 @@ class UsersController < ApplicationController
 
   def update
     user = User.find_by(id: params[:id])
-    user.address = params[:address]
 
-    coordiantes = Geocoder.search(user.address)
+    user.address = params[:address] || user.address
+    user.city = params[:city] || user.city
+    user.state = params[:state] || user.state
+    user.zip = params[:zip] || user.zip
+
+    coordiantes = Geocoder.search(full_address)
 
     user.latitude = coordiantes.first.latitude
     user.longitude = coordiantes.first.longitude
@@ -31,5 +35,9 @@ class UsersController < ApplicationController
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def full_address
+    user.address + user.city + user.state + user.zip
   end
 end
