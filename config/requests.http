@@ -21,8 +21,24 @@ Content-Type: application/json
 }
 
 
+### Users Update
+PATCH http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+  "address": "326 S 19th St Philadelphia PA"
+}
+
 ### Show Trips
 GET http://localhost:3000/trips/1
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
+### Create Trip
+POST http://localhost:3000/trips
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "restaurant_id": 1
+}

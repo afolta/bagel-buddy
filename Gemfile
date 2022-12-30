@@ -33,6 +33,12 @@ gem "bootsnap", require: false
 # Login Authentication
 gem 'jwt'
 
+# Geocoding
+gem 'geocoder'
+
+# Debugging
+gem 'pry'
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 

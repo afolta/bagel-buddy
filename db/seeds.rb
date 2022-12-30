@@ -1,4 +1,4 @@
-User.create!(name: "test person", email: "test@test.com", password: "password", image_url: "image")
+User.create!(name: "test person", email: "test@test.com", password: "password", image_url: "image", address: "326 S 19th St", city: "Philadelphia", state: "PA", zip: "19103", latitude: "", longitude: "")
 
 Restaurant.create!(name: "Philly Style Bagels Old City", latitude: "39.948416", longitude: "-75.147291")
 
