@@ -10,4 +10,6 @@ Rails.application.routes.draw do
 
   get "/trips/:id" => "trips#show"
   post "/trips" => "trips#create"
+
+  post "/restaurants-lookup" => "restaurants_lookup#new"
 end
