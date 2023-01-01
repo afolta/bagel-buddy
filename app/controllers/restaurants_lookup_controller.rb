@@ -19,13 +19,13 @@ class RestaurantsLookupController < ApplicationController
     request = Net::HTTP::Get.new(url)
     response = https.request(request)
     # Will slim down response once the fields are more obvious
-    lookup_response = response.read_body.as_json
+    lookup_response = JSON.parse response.read_body
 
     # Need to find a way to link to the lookup
-    RestaurantLookupResponse.create!(lookup_response: lookup_response)
+    RestaurantLookupResponse.create!(lookup_response: lookup_response[:results])
 
     render json: lookup_response
     # Keep for debugging purposes
-    puts response.read_body
+    puts lookup_response[:results]
   end
 end
