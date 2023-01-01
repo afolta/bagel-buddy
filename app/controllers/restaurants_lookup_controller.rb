@@ -18,8 +18,17 @@ class RestaurantsLookupController < ApplicationController
 
     request = Net::HTTP::Get.new(url)
     response = https.request(request)
-    # Will slim down response once the fields are more obvious
-    lookup_response = JSON.parse response.read_body
+    lookup_response = JSON.parse(response.read_body)
+
+    restaurants = lookup_response["results"].map do |restaurant|
+      {
+        name: restaurant["name"],
+        latitude: restaurant["geometry"]["location"]["lat"],
+        longitude: restaurant["geometry"]["location"]["lng"],
+      }
+    end
+
+    puts "Restaurant Names are #{restaurants}"
 
     # Need to find a way to link to the lookup
     RestaurantLookupResponse.create!(lookup_response: lookup_response[:results])
