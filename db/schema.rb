@@ -22,13 +22,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_31_205341) do
   end
 
   create_table "restaurant_lookup_requests", force: :cascade do |t|
-    t.string "lookupParameters"
+    t.string "lookup_parameters"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "restaurant_lookup_responses", force: :cascade do |t|
-    t.string "lookupResponse"
+    t.string "lookup_response"
     t.integer "restaurant_lookup_request_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
