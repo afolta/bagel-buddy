@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  require "geocoder"
+
   def create
     user = User.new(
       name: params[:name],
@@ -20,15 +22,16 @@ class UsersController < ApplicationController
   def update
     user = User.find_by(id: params[:id])
 
-    user.address = params[:address] || user.address
+    #binding.pry
+    user.address = params[:address]
     user.city = params[:city] || user.city
     user.state = params[:state] || user.state
     user.zip = params[:zip] || user.zip
 
-    coordiantes = Geocoder.search(full_address)
+    coordinates = Geocoder.search(params[:address])
 
-    user.latitude = coordiantes.first.latitude
-    user.longitude = coordiantes.first.longitude
+    user.latitude = coordinates.first.latitude
+    user.longitude = coordinates.first.longitude
 
     if user.save
       render json: { message: "User coordinates updated successfully" }
@@ -37,7 +40,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def full_address
-    user.address + user.city + user.state + user.zip
+  def show
+    user = User.find_by(id: params[:id])
+    render json: user
   end
 end

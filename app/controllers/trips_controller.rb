@@ -12,7 +12,7 @@ class TripsController < ApplicationController
     if trip
       render json: trip.as_json
     else
-      render json: { message: "This is not your trip! (Or order doesn't exist)" }
+      render json: { message: "This is not your trip! (Or trip doesn't exist)" }
     end
   end
 end
