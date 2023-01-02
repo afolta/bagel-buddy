@@ -9,8 +9,9 @@ class UsersController < ApplicationController
       password_confirmation: params[:password_confirmation],
       image_url: params[:image_url],
       address: params[:address],
-      latitude: params[:latitude],
-      longitude: params[:longitude],
+      city: params[:city],
+      state: params[:state],
+      zip: params[:zip],
     )
     if user.save
       render json: { message: "User created successfully" }, status: :created
