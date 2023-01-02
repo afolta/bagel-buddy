@@ -2,6 +2,8 @@ class UsersController < ApplicationController
   require "geocoder"
 
   def create
+    coordinates = Geocoder.search(params[:address])
+
     user = User.new(
       name: params[:name],
       email: params[:email],
@@ -12,7 +14,10 @@ class UsersController < ApplicationController
       city: params[:city],
       state: params[:state],
       zip: params[:zip],
+      latitude: coordinates.first.latitude,
+      longitude: coordinates.first.longitude,
     )
+
     if user.save
       render json: { message: "User created successfully" }, status: :created
     else
@@ -23,7 +28,6 @@ class UsersController < ApplicationController
   def update
     user = User.find_by(id: params[:id])
 
-    #binding.pry
     user.address = params[:address]
     user.city = params[:city] || user.city
     user.state = params[:state] || user.state
