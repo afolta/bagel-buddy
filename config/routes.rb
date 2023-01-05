@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get "/restaurants" => "restaurants#index"
 
   get "/reviews" => "reviews#index"
+  post "/reviews" => "reviews#new"
 
   get "/trips/:id" => "trips#show"
   post "/trips" => "trips#create"
