@@ -32,7 +32,7 @@ class ReviewsController < ApplicationController
     }
 
     # Need to find a way to link to the lookup
-    RestaurantLookupResponse.create!(lookup_response: lookup_response[:result])
+    RestaurantLookupResponse.create!(lookup_response: review)
 
     render json: review
 
