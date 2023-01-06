@@ -1,6 +1,7 @@
 class RestaurantsLookupController < ApplicationController
   require "uri"
   require "net/http"
+  require "geocoder"
 
   def new
     # Refactor variables
@@ -27,6 +28,7 @@ class RestaurantsLookupController < ApplicationController
         longitude: restaurant["geometry"]["location"]["lng"],
         rating: restaurant["rating"],
         user_ratings_total: restaurant["user_ratings_total"],
+        distance: Geocoder::Calculations.distance_between([restaurant["geometry"]["location"]["lat"], restaurant["geometry"]["location"]["lng"]], [current_user.latitude, current_user.longitude]).round(2),
       }
     end
 
