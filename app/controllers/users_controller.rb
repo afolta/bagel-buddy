@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     user.state = params[:state] || user.state
     user.zip = params[:zip] || user.zip
 
-    coordinates = Geocoder.search(params[:address])
+    coordinates = Geocoder.search("#{user.address} #{user.city} #{user.state} #{user.zip}")
 
     user.latitude = coordinates.first.latitude
     user.longitude = coordinates.first.longitude

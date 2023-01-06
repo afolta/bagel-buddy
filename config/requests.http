@@ -22,11 +22,15 @@ Content-Type: application/json
 
 
 ### Users Update
-PATCH http://localhost:3000/users/1
+PATCH http://localhost:3000/users/8
 Content-Type: application/json
 
 {
-  "address": "326 S 19th St Philadelphia"
+  "address": "326 S 19th St", 
+  "city": "Philadelphia", 
+  "state": "PA", 
+  "zip": "19103", 
+  "id": "8"
 }
 
 ### Show Trips
