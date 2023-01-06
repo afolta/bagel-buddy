@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   post "/reviews" => "reviews#new"
 
   get "/trips" => "trips#index"
-  get "/trips/:id" => "trips#show"
+  get "/trips/:id" => "trips#trips_by_place_id"
   post "/trips" => "trips#create"
 
   post "/restaurants-lookup" => "restaurants_lookup#new"
