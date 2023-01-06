@@ -3,8 +3,14 @@ class TripsController < ApplicationController
     trip = Trip.create(
       user_id: params[:user_id],
       restaurant_id: params[:restaurant_id],
+      notes: params[:notes],
     )
     render json: trip.as_json
+  end
+
+  def index
+    trips = Trip.all
+    render json: trips.as_json
   end
 
   def show

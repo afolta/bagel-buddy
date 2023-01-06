@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "/reviews" => "reviews#index"
   post "/reviews" => "reviews#new"
 
+  get "/trips" => "trips#index"
   get "/trips/:id" => "trips#show"
   post "/trips" => "trips#create"
 

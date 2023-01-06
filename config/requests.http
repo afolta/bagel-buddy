@@ -44,5 +44,6 @@ Content-Type: application/json
 
 {
   "user_id": 1,
-  "restaurant_id": 1
+  "restaurant_id": 1,
+  "notes": "Try the Salmon Lox next time!"
 }
