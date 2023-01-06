@@ -15,21 +15,19 @@ class ReviewsController < ApplicationController
     response = https.request(request)
     lookup_response = JSON.parse(response.read_body)["result"]
 
-    review = {
-      restaurant_name: lookup_response["name"],
-      place_id: lookup_response["place_id"],
-      website: lookup_response["website"],
-      icon: lookup_response["icon"],
-      phone_number: lookup_response["formatted_phone_number"],
-      rating: lookup_response["rating"],
-      reviews: lookup_response["reviews"].map do |review|
-        {
-          name: review["author_name"],
-          rating: review["rating"],
-          text: review["text"],
-        }
-      end,
-    }
+    review = lookup_response["reviews"].map do |review|
+      {
+        restaurant_name: lookup_response["name"],
+        place_id: lookup_response["place_id"],
+        website: lookup_response["website"],
+        icon: lookup_response["icon"],
+        phone_number: lookup_response["formatted_phone_number"],
+        rating: lookup_response["rating"],
+        name: review["author_name"],
+        rating: review["rating"],
+        text: review["text"],
+      }
+    end
 
     # Need to find a way to link to the lookup
     RestaurantLookupResponse.create!(lookup_response: review)

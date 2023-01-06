@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   require "geocoder"
 
   def create
-    coordinates = Geocoder.search(params[:address])
+    coordinates = Geocoder.search("#{params[:address]} #{params[:city]} #{params[:state]} #{params[:zip]}")
 
     user = User.new(
       name: params[:name],
