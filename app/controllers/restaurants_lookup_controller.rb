@@ -33,9 +33,11 @@ class RestaurantsLookupController < ApplicationController
     end
 
     # Need to find a way to link to the lookup
-    RestaurantLookupResponse.create!(lookup_response: lookup_response[:results])
+    # RestaurantLookupResponse.create!(lookup_response: lookup_response[:results])
 
-    render json: restaurants
+    sorted = restaurants.sort_by { |elem| elem[:distance] }
+
+    render json: sorted
 
     puts "\n== LOOKUP RESULTS =="
     puts lookup_response[:results]
