@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get "/users/:id" => "users#show"
 
   post "/sessions" => "sessions#create"
+  post "/suggestions" => "suggestions#create"
 
   get "/restaurants" => "restaurants#index"
 
