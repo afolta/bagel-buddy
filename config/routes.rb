@@ -16,5 +16,7 @@ Rails.application.routes.draw do
 
   delete "/trips/:id" => "trips#destroy"
 
-  post "/restaurants-lookup" => "restaurants_lookup#new"
+  post "/restaurants-lookup" => "restaurants_lookup#create"
+
+  post "/sms" => "sms#create"
 end
