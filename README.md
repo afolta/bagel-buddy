@@ -12,13 +12,10 @@ A Rails application that allows a user to locate bagel shops within a given area
 
 - `bin/setup`
 
-- To work with Google's place's API, you will need an API key
-- [Create a new API key](https://developers.google.com/maps/documentation/places/web-service/cloud-setup) or reach out to @afolta to temporarily borrow a key. 
+- To work with Google's place's API, you will need an API key. [Create a new API key](https://developers.google.com/maps/documentation/places/web-service/cloud-setup) or reach out to @afolta to temporarily borrow a key. 
 
 - To start the application:
   `rails server`
-  
-- To work with Gool
 
 ## Integrations
 
