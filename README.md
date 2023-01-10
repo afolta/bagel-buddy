@@ -1,25 +1,28 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Bagel Buddy is a Rails application that allows a user to locate bagel shops within a given area.
 
-Things you may want to cover:
+## Dependencies:
+- The React frontend application for this application is located here [https://github.com/afolta/bagel-buddy-frontend](Bagel Buddy Frontend)
 
-* Ruby version
+## Setup
+### Clone the repo
 
-* System dependencies
+- `cd bagel-buddy`
 
-* Configuration
+- `bin/setup`
 
-* Database creation
+- To start the application:
+  `rails server`
 
-* Database initialization
+## Integrations
 
-* How to run the test suite
+### [Google Places API](https://developers.google.com/maps/documentation/places/web-service)
+- The bagel shops are populated by [Google's Nearby Search API](https://developers.google.com/maps/documentation/places/web-service)
+- Reviews are populated by Google's [Place Details](https://developers.google.com/maps/documentation/places/web-service/details)
 
-* Services (job queues, cache servers, search engines, etc.)
+### [Geocoder](https://github.com/alexreisner/geocoder)
+- Used to convert addresses to latitude and longitude coordinates
 
-* Deployment instructions
-
-* ...
-# bagel-buddy
+## Contributions:
+Are very welcome. Please open a PR and submit it for review.
