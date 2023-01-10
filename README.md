@@ -3,7 +3,7 @@
 Bagel Buddy is a Rails application that allows a user to locate bagel shops within a given area.
 
 ## Dependencies:
-- The React frontend application for this application is located here [https://github.com/afolta/bagel-buddy-frontend](Bagel Buddy Frontend)
+- The React frontend application for this application is located here [Bagel Buddy Frontend](https://github.com/afolta/bagel-buddy-frontend)
 
 ## Setup
 ### Clone the repo
@@ -22,7 +22,7 @@ Bagel Buddy is a Rails application that allows a user to locate bagel shops with
 - Reviews are populated by Google's [Place Details](https://developers.google.com/maps/documentation/places/web-service/details)
 
 ### [Geocoder](https://github.com/alexreisner/geocoder)
-- Used to convert addresses to latitude and longitude coordinates
+- Converts addresses to latitude and longitude coordinates.
 
 ## Contributions:
 Are very welcome. Please open a PR and submit it for review.
