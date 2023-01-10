@@ -1,6 +1,6 @@
-# README
+# Bagel Buddy
 
-Bagel Buddy is a Rails application that allows a user to locate bagel shops within a given area.
+A Rails application that allows a user to locate bagel shops within a given area.
 
 ## Dependencies:
 - The React frontend application for this application is located here [Bagel Buddy Frontend](https://github.com/afolta/bagel-buddy-frontend)
