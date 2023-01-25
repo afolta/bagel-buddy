@@ -26,7 +26,7 @@ class RestaurantsLookupController < ApplicationController
     JSON.parse(response.read_body)
   end
 
-  def lookup_url
+  private def lookup_url
     @latitude = params[:latitude]
     @longitude = params[:longitude]
     @radius = params[:radius] || 8047 ## Defaults to 5 mile radius
