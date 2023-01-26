@@ -10,7 +10,7 @@ class RestaurantsLookupController < ApplicationController
     @radius = params[:radius] || 8047 ## Defaults to 5 mile radius
     @keyword = "bagel"
 
-    RestaurantLookupRequest.create!(lookup_parameters: { latitude: @latitude, longitude: @longitude, radius: @radius, keyword: @keyword })
+    create_restaurant_lookup_request
 
     https = Net::HTTP.new(lookup_url.host, lookup_url.port)
     https.use_ssl = true
@@ -49,4 +49,15 @@ end
 
 def lookup_url
   @lookup_url = URI("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{@latitude}%2C#{@longitude}&radius=#{@radius}&type=restaurant&keyword=#{@keyword}&key=#{Rails.application.credentials.google_places_api[:api_key]}")
+end
+
+private def create_restaurant_lookup_request
+  RestaurantLookupRequest.create!(
+    lookup_parameters: {
+      latitude: @latitude,
+      longitude: @longitude,
+      radius: @radius,
+      keyword: @keyword,
+    },
+  )
 end
