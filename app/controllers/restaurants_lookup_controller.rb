@@ -16,8 +16,8 @@ class RestaurantsLookupController < ApplicationController
 
     request = Net::HTTP::Get.new(lookup_url)
 
-    response = https.request(request)
-    lookup_response = JSON.parse(response.read_body)
+    raw_response = https.request(request)
+    lookup_response = JSON.parse(raw_response.read_body)
 
     restaurants = lookup_response["results"].map do |restaurant|
       {
@@ -28,16 +28,7 @@ class RestaurantsLookupController < ApplicationController
         longitude: restaurant["geometry"]["location"]["lng"],
         rating: restaurant["rating"],
         user_ratings_total: restaurant["user_ratings_total"],
-        distance: Geocoder::Calculations.distance_between(
-          [
-            restaurant["geometry"]["location"]["lat"],
-            restaurant["geometry"]["location"]["lng"]
-          ],
-          [
-            current_user.latitude,
-            current_user.longitude
-         ]
-        ).round(2)
+        distance: distance(restaurant)
       }
     end
 
@@ -71,6 +62,19 @@ class RestaurantsLookupController < ApplicationController
         restaurant_lookup_request_id: RestaurantLookupRequest.last.id
       }
     )
+  end
+
+  private def distance(restaurant)
+    Geocoder::Calculations.distance_between(
+        [
+          restaurant["geometry"]["location"]["lat"],
+          restaurant["geometry"]["location"]["lng"]
+        ],
+        [
+          current_user.latitude,
+          current_user.longitude
+        ]
+    ).round(2)
   end
 
   private def sorted_response(restaurants)
