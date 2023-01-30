@@ -3,12 +3,11 @@ class RestaurantsLookupController < ApplicationController
   require "net/http"
   require "geocoder"
 
-  @keyword = "bagel"
-
   def new
     @latitude = params[:latitude]
     @longitude = params[:longitude]
     @radius = params[:radius] || 8047 ## Defaults to 5 mile radius
+    @keyword = "bagel"
 
     create_restaurant_lookup_request
 
@@ -20,7 +19,7 @@ class RestaurantsLookupController < ApplicationController
     response = https.request(request)
     lookup_response = JSON.parse(response.read_body)
 
-    @restaurants = lookup_response["results"].map do |restaurant|
+    restaurants = lookup_response["results"].map do |restaurant|
       {
         name: restaurant["name"],
         place_id: restaurant["place_id"],
@@ -42,12 +41,12 @@ class RestaurantsLookupController < ApplicationController
       }
     end
 
-    sorted_response
+    sorted_response(restaurants)
 
-    create_restaurant_lookup_response
+    create_restaurant_lookup_response(restaurants)
 
     puts "\n== RESTAURANT INFO =="
-    puts "Restaurant Names are #{@restaurants}"
+    puts "Restaurant Names are #{restaurants}"
   end
 
   private def lookup_url
@@ -65,17 +64,17 @@ class RestaurantsLookupController < ApplicationController
     )
   end
 
-  private def create_restaurant_lookup_response
+  private def create_restaurant_lookup_response(restaurants)
     RestaurantLookupResponse.create!(
       {
-        lookup_response: @restaurants,
+        lookup_response: restaurants,
         restaurant_lookup_request_id: RestaurantLookupRequest.last.id
       }
     )
   end
 
-  private def sorted_response
-    sorted = @restaurants.sort_by { |elem| elem[:distance] }
+  private def sorted_response(restaurants)
+    sorted = restaurants.sort_by { |elem| elem[:distance] }
 
     render json: sorted
   end
