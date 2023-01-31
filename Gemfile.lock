@@ -84,6 +84,11 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    factory_girl (4.9.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.9.0)
+      factory_girl (~> 4.9.0)
+      railties (>= 3.0.0)
     faker (3.1.0)
       i18n (>= 1.8.11, < 2)
     geocoder (1.8.1)
@@ -195,6 +200,7 @@ DEPENDENCIES
   bootsnap
   debug
   factory_bot_rails
+  factory_girl_rails
   faker
   geocoder
   jwt
