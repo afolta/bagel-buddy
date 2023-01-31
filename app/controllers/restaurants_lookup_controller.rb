@@ -27,8 +27,8 @@ class RestaurantsLookupController < ApplicationController
         latitude: restaurant["geometry"]["location"]["lat"],
         longitude: restaurant["geometry"]["location"]["lng"],
         rating: restaurant["rating"],
-        user_ratings_total: restaurant["user_ratings_total"],
-        distance: distance(restaurant)
+        user_ratings_total: restaurant["user_ratings_total"]
+        # distance: distance(restaurant)
       }
     end
 
