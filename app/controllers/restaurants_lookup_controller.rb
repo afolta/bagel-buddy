@@ -6,7 +6,7 @@ class RestaurantsLookupController < ApplicationController
   def new
     @latitude = params[:latitude]
     @longitude = params[:longitude]
-    @radius = params[:radius] || 8047 ## Defaults to 5 mile radius
+    @radius = params.fetch(:radius, 8047) ## Defaults to 5 mile radius
     @keyword = "bagel"
 
     create_restaurant_lookup_request
