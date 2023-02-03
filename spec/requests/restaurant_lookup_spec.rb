@@ -21,11 +21,20 @@ RSpec.describe "RestaurantLookups", type: :request do
       jwt = JWT.encode({ user_id: user.id }, Rails.application.credentials.fetch(:secret_key_base), "HS256")
 
       post '/restaurants-lookup', params: {
-        latitude: current_user_latitude,
-        longitude: current_user_longitude
+        latitude: user.latitude,
+        longitude: user.longitude
       },
        headers: { "Authorization" => "Bearer #{jwt}" }
        @response = response
+       @params = request.params
+    end
+
+    it 'calls the Restaurant Lookup controller with the correct params' do
+      # allow(RestaurantsLookupController).to receive(:new).and_return(
+      #   instance_double(RestaurantsLookupController, on: nil, perform: nil)
+      # )
+
+      expect(RestaurantsLookupController).to have_received(:new).with(@params)
     end
 
     it 'returns an HTTP status of 200' do
@@ -35,7 +44,7 @@ RSpec.describe "RestaurantLookups", type: :request do
     it 'returns a name' do
       json_response = JSON.parse(@response.body)
 
-      json_response.first.dig('name').should_not be_nil
+      expect(json_response.first.dig('name')).to_not be_nil
     end
   end
 end

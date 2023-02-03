@@ -64,16 +64,26 @@ class RestaurantsLookupController < ApplicationController
     )
   end
 
+  private def restaurant_coordinates(restaurant)
+    location = restaurant["geometry"]["location"]
+
+    [
+      location["lat"],
+      location["lng"]
+    ]
+  end
+
+  private def user_coordinates
+    [
+      current_user.latitude,
+      current_user.longitude
+    ]
+  end
+
   private def distance(restaurant)
     Geocoder::Calculations.distance_between(
-        [
-          restaurant["geometry"]["location"]["lat"],
-          restaurant["geometry"]["location"]["lng"]
-        ],
-        [
-          current_user.latitude,
-          current_user.longitude
-        ]
+        restaurant_coordinates(restaurant),
+        user_coordinates
     ).round(2)
   end
 
