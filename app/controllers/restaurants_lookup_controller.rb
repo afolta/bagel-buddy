@@ -14,9 +14,9 @@ class RestaurantsLookupController < ApplicationController
     https = Net::HTTP.new(lookup_url.host, lookup_url.port)
     https.use_ssl = true
 
-    request = Net::HTTP::Get.new(lookup_url)
+    lookup_request = Net::HTTP::Get.new(lookup_url)
 
-    raw_response = https.request(request)
+    raw_response = https.request(lookup_request)
     lookup_response = JSON.parse(raw_response.read_body)
 
     restaurants = lookup_response["results"].map do |restaurant|
