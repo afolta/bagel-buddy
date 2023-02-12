@@ -1,26 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe "RestaurantsLookupController", type: :request do
-  describe "POST /restaurants-lookup" do
-    let!(:current_user_latitude) { "39.94709795"}
-    let!(:current_user_longitude) { "-75.17313898856435"}
+  let!(:current_user_latitude) { "39.94709795"}
+  let!(:current_user_longitude) { "-75.17313898856435"}
+  let!(:user) { User.create(
+                         name: "Test Person",
+                         email: "testperson@test.com",
+                         password: "password",
+                         password_confirmation: "password",
+                         address: "864 Rose St",
+                         city: "West Lafayette",
+                         state: "IN",
+                         zip: "47906",
+                         latitude: current_user_latitude,
+                         longitude: current_user_longitude) }
+  let!(:jwt) { JWT.encode({ user_id: user.id }, Rails.application.credentials.fetch(:secret_key_base), "HS256") }
 
+  describe "POST /restaurants-lookup successful response" do
     before do
-      user = User.create(
-                          name: "Test Person",
-                          email: "testperson@test.com",
-                          password: "password",
-                          password_confirmation: "password",
-                          address: "864 Rose St",
-                          city: "West Lafayette",
-                          state: "IN",
-                          zip: "47906",
-                          latitude: current_user_latitude,
-                          longitude: current_user_longitude)
-
-      jwt = JWT.encode({ user_id: user.id }, Rails.application.credentials.fetch(:secret_key_base), "HS256")
-
-
       post '/restaurants-lookup', params: {
         latitude: user.latitude,
         longitude: user.longitude
@@ -97,6 +94,27 @@ RSpec.describe "RestaurantsLookupController", type: :request do
       end
 
       expect(distance).to_not be_nil
+    end
+  end
+
+  describe "POST /restaurants-lookup invalid parameters" do
+    before do
+      post '/restaurants-lookup', params: {
+        latitude: user.latitude,
+        longitude: nil
+      },
+       headers: { "Authorization" => "Bearer #{jwt}" }
+       @response = response
+       @params = request.params
+       @restaurants = JSON.parse(@response.body)
+    end
+
+    it 'returns a 404' do
+      binding.pry
+      expect(@response).to have_http_status(404)
+    end
+
+    it 'returns an invalid request' do
     end
   end
 end

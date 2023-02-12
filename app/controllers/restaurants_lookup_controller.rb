@@ -3,6 +3,12 @@ class RestaurantsLookupController < ApplicationController
   require "net/http"
   require "geocoder"
 
+  GOOGLE_PLACES_API_HTTP_STATUS_MAP = {
+    'ZERO_RESULTS'     => :not_found,
+    'INVALID_REQUEST'  => :bad_request,
+    'OK'               => :success
+  }.freeze
+
   def new
     @latitude = params[:latitude]
     @longitude = params[:longitude]
@@ -19,20 +25,28 @@ class RestaurantsLookupController < ApplicationController
     raw_response = https.request(lookup_request)
     lookup_response = JSON.parse(raw_response.read_body)
 
-    restaurants = lookup_response["results"].map do |restaurant|
-      {
-        name: restaurant["name"],
-        place_id: restaurant["place_id"],
-        address: restaurant["vicinity"],
-        latitude: restaurant["geometry"]["location"]["lat"],
-        longitude: restaurant["geometry"]["location"]["lng"],
-        rating: restaurant["rating"],
-        user_ratings_total: restaurant["user_ratings_total"],
-        distance: distance(restaurant)
-      }
+    if response_status(lookup_response) === "OK"
+      restaurants = lookup_response["results"].map do |restaurant|
+        {
+          name: restaurant["name"],
+          place_id: restaurant["place_id"],
+          address: restaurant["vicinity"],
+          latitude: restaurant["geometry"]["location"]["lat"],
+          longitude: restaurant["geometry"]["location"]["lng"],
+          rating: restaurant["rating"],
+          user_ratings_total: restaurant["user_ratings_total"],
+          distance: distance(restaurant)
+        }
+      end
+    else
+      # status: :bad_request
+      puts "Invalid Request"
+      return
     end
 
     sorted_response(restaurants)
+
+    render_response(restaurants)
 
     create_restaurant_lookup_response(restaurants)
 
@@ -40,8 +54,16 @@ class RestaurantsLookupController < ApplicationController
     puts "Restaurant Names are #{restaurants}"
   end
 
+  private def google_api_http_status
+    ZERO_RESULTS
+  end
+
   private def lookup_url
     URI("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{@latitude}%2C#{@longitude}&radius=#{@radius}&type=restaurant&keyword=#{@keyword}&key=#{Rails.application.credentials.google_places_api[:api_key]}")
+  end
+
+  private def response_status(lookup_response)
+    lookup_response["status"]
   end
 
   private def create_restaurant_lookup_request
@@ -88,8 +110,10 @@ class RestaurantsLookupController < ApplicationController
   end
 
   private def sorted_response(restaurants)
-    sorted = restaurants.sort_by { |elem| elem[:distance] }
+    restaurants.sort_by { |elem| elem[:distance] }
+  end
 
-    render json: sorted
+  private def render_response(restaurants)
+    render json: restaurants
   end
 end
