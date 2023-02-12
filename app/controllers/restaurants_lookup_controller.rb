@@ -24,25 +24,7 @@ class RestaurantsLookupController < ApplicationController
 
     raw_response = https.request(lookup_request)
     lookup_response = JSON.parse(raw_response.read_body)
-
-    if response_status(lookup_response) === "OK"
-      restaurants = lookup_response["results"].map do |restaurant|
-        {
-          name: restaurant["name"],
-          place_id: restaurant["place_id"],
-          address: restaurant["vicinity"],
-          latitude: restaurant["geometry"]["location"]["lat"],
-          longitude: restaurant["geometry"]["location"]["lng"],
-          rating: restaurant["rating"],
-          user_ratings_total: restaurant["user_ratings_total"],
-          distance: distance(restaurant)
-        }
-      end
-    else
-      # status: :bad_request
-      puts "Invalid Request"
-      return
-    end
+    restaurants = restaurants(lookup_response)
 
     sorted_response(restaurants)
 
@@ -54,16 +36,27 @@ class RestaurantsLookupController < ApplicationController
     puts "Restaurant Names are #{restaurants}"
   end
 
-  private def google_api_http_status
-    ZERO_RESULTS
-  end
-
   private def lookup_url
     URI("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{@latitude}%2C#{@longitude}&radius=#{@radius}&type=restaurant&keyword=#{@keyword}&key=#{Rails.application.credentials.google_places_api[:api_key]}")
   end
 
   private def response_status(lookup_response)
     lookup_response["status"]
+  end
+
+  private def restaurants(lookup_response)
+    lookup_response["results"].map do |restaurant|
+        {
+          name: restaurant["name"],
+          place_id: restaurant["place_id"],
+          address: restaurant["vicinity"],
+          latitude: restaurant["geometry"]["location"]["lat"],
+          longitude: restaurant["geometry"]["location"]["lng"],
+          rating: restaurant["rating"],
+          user_ratings_total: restaurant["user_ratings_total"],
+          distance: distance(restaurant)
+        }
+    end
   end
 
   private def create_restaurant_lookup_request
