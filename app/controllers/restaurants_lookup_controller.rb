@@ -3,12 +3,6 @@ class RestaurantsLookupController < ApplicationController
   require "net/http"
   require "geocoder"
 
-  GOOGLE_PLACES_API_HTTP_STATUS_MAP = {
-    'ZERO_RESULTS'     => :not_found,
-    'INVALID_REQUEST'  => :bad_request,
-    'OK'               => :success
-  }.freeze
-
   def new
     @latitude = params[:latitude]
     @longitude = params[:longitude]
@@ -24,11 +18,14 @@ class RestaurantsLookupController < ApplicationController
 
     raw_response = https.request(lookup_request)
     lookup_response = JSON.parse(raw_response.read_body)
+
+    lookup_status = set_lookup_status(lookup_response)
+
     restaurants = restaurants(lookup_response)
 
     sorted_response(restaurants)
 
-    render_response(restaurants)
+    render_response(restaurants, lookup_status)
 
     create_restaurant_lookup_response(restaurants)
 
@@ -36,26 +33,39 @@ class RestaurantsLookupController < ApplicationController
     puts "Restaurant Names are #{restaurants}"
   end
 
+  private def set_lookup_status(lookup_response)
+    case
+    when lookup_response["status"] === 'OK'
+      :ok
+    when lookup_response["status"] === 'INVALID_REQUEST'
+      :bad_request
+    when lookup_response["status"] === 'ZERO_RESULTS'
+      :not_found
+    else
+      :unprocessable_entity
+    end
+  end
+
   private def lookup_url
     URI("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{@latitude}%2C#{@longitude}&radius=#{@radius}&type=restaurant&keyword=#{@keyword}&key=#{Rails.application.credentials.google_places_api[:api_key]}")
   end
 
-  private def response_status(lookup_response)
-    lookup_response["status"]
-  end
-
   private def restaurants(lookup_response)
-    lookup_response["results"].map do |restaurant|
-        {
-          name: restaurant["name"],
-          place_id: restaurant["place_id"],
-          address: restaurant["vicinity"],
-          latitude: restaurant["geometry"]["location"]["lat"],
-          longitude: restaurant["geometry"]["location"]["lng"],
-          rating: restaurant["rating"],
-          user_ratings_total: restaurant["user_ratings_total"],
-          distance: distance(restaurant)
-        }
+    if lookup_response["results"].nil?
+      []
+    else
+      lookup_response["results"].map do |restaurant|
+          {
+            name: restaurant["name"],
+            place_id: restaurant["place_id"],
+            address: restaurant["vicinity"],
+            latitude: restaurant["geometry"]["location"]["lat"],
+            longitude: restaurant["geometry"]["location"]["lng"],
+            rating: restaurant["rating"],
+            user_ratings_total: restaurant["user_ratings_total"],
+            distance: distance(restaurant)
+          }
+      end
     end
   end
 
@@ -106,7 +116,7 @@ class RestaurantsLookupController < ApplicationController
     restaurants.sort_by { |elem| elem[:distance] }
   end
 
-  private def render_response(restaurants)
-    render json: restaurants
+  private def render_response(restaurants, lookup_status)
+    render json: restaurants, status: lookup_status
   end
 end
