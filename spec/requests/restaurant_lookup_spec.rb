@@ -24,75 +24,53 @@ RSpec.describe "RestaurantsLookupController", type: :request do
       },
        headers: { "Authorization" => "Bearer #{jwt}" }
        @response = response
-       @params = request.params
        @restaurants = JSON.parse(@response.body)
     end
 
-    it 'returns an HTTP status of 200' do
+    it 'returns an HTTP status of OK' do
       expect(@response).to have_http_status(200)
     end
 
-    it 'returns a name' do
+    it 'returns valid parameters' do
       restaurant_name = @restaurants.map do |restaurant|
         restaurant.fetch('name')
       end
 
-      expect(restaurant_name).to_not be_nil
-    end
-
-    it 'returns a place_id' do
       place_id = @restaurants.map do |restaurant|
         restaurant.fetch('place_id')
       end
 
-      expect(place_id).to_not be_nil
-    end
-
-    it 'returns an address' do
       address = @restaurants.map do |restaurant|
         restaurant.fetch('address')
       end
 
-      expect(address).to_not be_nil
-    end
-
-    it 'returns a latitude' do
       latitude = @restaurants.map do |restaurant|
         restaurant.fetch('latitude')
       end
 
-      expect(latitude).to_not be_nil
-    end
-
-    it 'returns a longitude' do
       longitude = @restaurants.map do |restaurant|
         restaurant.fetch('longitude')
       end
 
-      expect(longitude).to_not be_nil
-    end
-
-    it 'returns a rating' do
       rating = @restaurants.map do |restaurant|
         restaurant.fetch('rating')
       end
 
-      expect(rating).to_not be_nil
-    end
-
-    it 'returns a user_ratings_total' do
       user_ratings_total = @restaurants.map do |restaurant|
         restaurant.fetch('user_ratings_total')
       end
 
-      expect(user_ratings_total).to_not be_nil
-    end
-
-    it 'returns a distance' do
       distance = @restaurants.map do |restaurant|
         restaurant.fetch('distance')
       end
 
+      expect(restaurant_name).to_not be_nil
+      expect(place_id).to_not be_nil
+      expect(address).to_not be_nil
+      expect(latitude).to_not be_nil
+      expect(longitude).to_not be_nil
+      expect(rating).to_not be_nil
+      expect(user_ratings_total).to_not be_nil
       expect(distance).to_not be_nil
     end
   end
@@ -105,16 +83,35 @@ RSpec.describe "RestaurantsLookupController", type: :request do
       },
        headers: { "Authorization" => "Bearer #{jwt}" }
        @response = response
-       @params = request.params
        @restaurants = JSON.parse(@response.body)
     end
 
-    it 'returns a 404' do
-      binding.pry
+    it 'returns an HTTP status of Invalid Request' do
+      expect(@response).to have_http_status(400)
+    end
+
+    it 'returns an empty array of restaurants' do
+      expect(@restaurants).to eq([])
+    end
+  end
+
+  describe "POST /restaurants-lookup no results found" do
+    before do
+      post '/restaurants-lookup', params: {
+        latitude: 39.94709795,
+        longitude: 75.1731389
+      },
+       headers: { "Authorization" => "Bearer #{jwt}" }
+       @response = response
+       @restaurants = JSON.parse(@response.body)
+    end
+
+    it 'returns an HTTP status of Not Found' do
       expect(@response).to have_http_status(404)
     end
 
-    it 'returns an invalid request' do
+    it 'returns an empty array of restaurants' do
+      expect(@restaurants).to eq([])
     end
   end
 end
