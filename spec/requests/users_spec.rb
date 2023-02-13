@@ -27,5 +27,10 @@ RSpec.describe "Users", type: :request do
     it 'returns a message that the user was created' do
       expect(@response_message).to include("message" => "User created successfully")
     end
+
+    it 'sets the users coordinates' do
+      expect(User.last.latitude).to eq("40.434603894154144")
+      expect(User.last.longitude).to eq("-86.90127979182287")
+    end
   end
 end
