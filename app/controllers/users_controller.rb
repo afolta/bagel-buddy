@@ -19,10 +19,12 @@ class UsersController < ApplicationController
   def update
     user = User.find_by(id: params[:id])
 
-    user.address = params[:address]
-    user.city = params[:city] || user.city
-    user.state = params[:state] || user.state
-    user.zip = params[:zip] || user.zip
+    user.update!(
+      address: params[:address],
+      city: params[:city] || user.city,
+      state: params[:state] || user.state,
+      zip: params[:zip] || user.zip
+    )
 
     coordinates = coordinates(user)
 
