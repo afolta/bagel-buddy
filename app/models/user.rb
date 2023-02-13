@@ -4,4 +4,6 @@ class User < ApplicationRecord
 
   has_many :reviews
   has_many :trips
+  has_many :restaurant_lookup_requests
+  has_many :restaurant_lookup_responses
 end
