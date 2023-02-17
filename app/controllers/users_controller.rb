@@ -1,13 +1,17 @@
 class UsersController < ApplicationController
   require "geocoder"
 
+  attr_reader :address, :city, :state, :zip
+
+  def initialize(params = {})
+    @address  = params[:address]
+    @city = params[:city]
+    @state = params[:state]
+    @zip = params[:zip]
+  end
+
   def create
-    coordinates_response = Geocoder.search(
-      "#{params[:address]}
-       #{params[:city]}
-       #{params[:state]}
-       #{params[:zip]}"
-    )
+    coordinates_response = coordinates(address, city, state, zip)
 
     if coordinates_response === []
       render json: { message: 'Invalid address search' }, status: :bad_request
@@ -19,22 +23,20 @@ class UsersController < ApplicationController
   def update
     user = User.find_by(id: params[:id])
 
-    user.update!(
-      address: params[:address],
-      city: params[:city] || user.city,
-      state: params[:state] || user.state,
-      zip: params[:zip] || user.zip
-    )
+    initialize(params)
 
-    coordinates = coordinates(user)
-
-    user.latitude = coordinates.first.latitude
-    user.longitude = coordinates.first.longitude
-
-    if user.save
-      render json: { message: "User coordinates updated successfully" }
+    if coordinates(address, city, state, zip) === []
+      render json: { message: "Invalid Address" }, status: :unprocessable_entity
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      user.update!(
+      address: address,
+      city: city,
+      state: state,
+      zip: zip,
+      latitude: coordinates(address, city, state, zip).first.latitude,
+      longitude: coordinates(address, city, state, zip).first.longitude
+    )
+      render json: { message: "User address updated successfully" }
     end
   end
 
@@ -60,12 +62,12 @@ class UsersController < ApplicationController
     render json: { message: "User created successfully" }, status: :created
   end
 
-  private def coordinates(user)
+  private def coordinates(address, city, state, zip)
     Geocoder.search(
-      "#{user.address}
-       #{user.city}
-       #{user.state}
-       #{user.zip}"
+      "#{address}
+       #{city}
+       #{state}
+       #{zip}"
     )
   end
 end
